@@ -108,7 +108,7 @@ var totalDistance = 0;
     }
 </script>
 <script async defer
-src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap">
+src="https://maps.googleapis.com/maps/api/js?key=<?php echo htmlspecialchars(getenv('GOOGLE_MAPS_API_KEY') ?: 'YOUR_GOOGLE_MAPS_API_KEY'); ?>&callback=initMap">
 </script>
 </body>
 </html>

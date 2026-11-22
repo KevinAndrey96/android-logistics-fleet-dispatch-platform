@@ -1,6 +1,6 @@
-# Logistics Fleet Dispatch Platform
+# Android Logistics Fleet Dispatch Platform
 
-[![CI - Build, Test & Verify](https://github.com/KevinAndrey96/logistics-fleet-dispatch-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/KevinAndrey96/logistics-fleet-dispatch-platform/actions/workflows/ci.yml)
+[![CI - Build, Test & Verify](https://github.com/KevinAndrey96/android-android-logistics-fleet-dispatch-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/KevinAndrey96/android-android-logistics-fleet-dispatch-platform/actions/workflows/ci.yml)
 [![PHP Version](https://img.shields.io/badge/PHP-8.1%20%7C%208.2-777BB4?style=flat-square&logo=php&logoColor=white)](https://www.php.net/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat-square&logo=mysql&logoColor=white)](https://www.mysql.com/)
 [![Android](https://img.shields.io/badge/Android-Native%20Java-3DDC84?style=flat-square&logo=android&logoColor=white)](https://developer.android.com/)
@@ -45,7 +45,7 @@ flowchart TD
 ## 📂 Monorepo Organization
 
 ```
-logistics-fleet-dispatch-platform/
+android-logistics-fleet-dispatch-platform/
 ├── apps/
 │   ├── android-customer/       # Native Android application for business & retail customers
 │   │   ├── app/src/main/       # Java activities, models, layouts, Google Maps integration
