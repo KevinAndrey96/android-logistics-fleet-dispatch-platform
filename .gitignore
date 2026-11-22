@@ -1,0 +1,42 @@
+# Environment variables & local configuration
+.env
+.env.local
+.env.*.local
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Log files
+*.log
+error_log
+.ftpquota
+
+# Composer & PHP
+vendor/
+composer.lock
+.phpunit.result.cache
+
+# Android & Gradle Build Artifacts
+.gradle/
+build/
+*/build/
+*/*/build/
+*.iml
+.idea/
+local.properties
+.navigation/
+captures/
+output.json
+
+# Android Binaries & Packages
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+bin/
+gen/
+out/

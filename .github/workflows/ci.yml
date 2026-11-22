@@ -1,0 +1,96 @@
+name: CI - Build, Test & Verify
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  backend-verification:
+    name: Backend & Database (PHP ${{ matrix.php-version }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version: ['8.1', '8.2']
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: logistics_db
+          MYSQL_USER: logistics_user
+          MYSQL_PASSWORD: logistics_secret_pass
+          MYSQL_ROOT_PASSWORD: root_secret_pass
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping -u root -proot_secret_pass" --health-interval=10s --health-timeout=5s --health-retries=5
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP ${{ matrix.php-version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: pdo, pdo_mysql, mysqli, gd, mbstring, zip
+          coverage: none
+
+      - name: Verify PHP Syntax
+        run: |
+          echo "Scanning all backend PHP scripts for syntax errors..."
+          find backend -type f -name "*.php" -print0 | while IFS= read -r -d '' file; do
+            php -l "$file" || exit 1
+          done
+          echo "All backend PHP files passed syntax validation."
+
+      - name: Initialize Relational Database Schema
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: logistics_db
+          DB_USERNAME: logistics_user
+          DB_PASSWORD: logistics_secret_pass
+        run: |
+          mysql -h 127.0.0.1 -P 3306 -u logistics_user -plogistics_secret_pass logistics_db < database/schema.sql
+          mysql -h 127.0.0.1 -P 3306 -u logistics_user -plogistics_secret_pass logistics_db < database/seeds.sql
+          echo "Schema and seed data loaded successfully into MySQL 8.0."
+
+      - name: Run Database & Compatibility Verification
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: logistics_db
+          DB_USERNAME: logistics_user
+          DB_PASSWORD: logistics_secret_pass
+        run: |
+          php database/verify_database.php
+
+  android-verification:
+    name: Mobile Android Apps Sanity
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate Android Manifests & Project Layout
+        run: |
+          echo "Validating Android Customer App layout..."
+          test -f apps/android-customer/app/src/main/AndroidManifest.xml || exit 1
+          test -f apps/android-customer/app/build.gradle || exit 1
+
+          echo "Validating Android Courier App layout..."
+          test -f apps/android-courier/app/src/main/AndroidManifest.xml || exit 1
+          test -f apps/android-courier/app/build.gradle || exit 1
+
+          echo "Verifying no binary APK artifacts committed..."
+          APK_COUNT=$(find apps -name "*.apk" | wc -l)
+          if [ "$APK_COUNT" -gt 0 ]; then
+            echo "Error: Found committed APK files!"
+            exit 1
+          fi
+
+          echo "All mobile application sanity checks passed."
