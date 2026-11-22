@@ -8,7 +8,7 @@ if (!empty($_POST)) {
     $query = "SELECT 1 FROM Clientes WHERE Email = :Dato1";
     
     $query_params = array(
-        ':Dato1' => $_POST['Dato1'];
+        ':Dato1' => isset($_POST['Dato1']) ? $_POST['Dato1'] : ''
     );
     
     try {
